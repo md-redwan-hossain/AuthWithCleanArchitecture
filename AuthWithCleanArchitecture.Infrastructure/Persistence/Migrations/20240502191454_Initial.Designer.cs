@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240502145455_Initial")]
+    [Migration("20240502191454_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
-            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.AppUserAggregate.AppUser", b =>
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -72,15 +72,19 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUsers");
+                    b.ToTable("AppUsers", (string)null);
                 });
 
-            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.AppUserAggregate.AppUserAuthClaim", b =>
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUserAuthClaim", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("AppUserId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimTag")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimValue")
@@ -93,12 +97,14 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("AppUserId", "ClaimTag");
+                    b.HasKey("Id");
 
-                    b.ToTable("AppUserAuthClaim");
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("AppUserAuthClaims", (string)null);
                 });
 
-            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.AppUserAggregate.AppUserAuthRole", b =>
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUserAuthRole", b =>
                 {
                     b.Property<Guid>("AppUserId")
                         .HasColumnType("TEXT");
@@ -114,10 +120,12 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 
                     b.HasKey("AppUserId", "AuthRoleId");
 
-                    b.ToTable("AppUserAuthRole");
+                    b.HasIndex("AuthRoleId");
+
+                    b.ToTable("AppUserAuthRoles", (string)null);
                 });
 
-            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.AuthRoleAggregate.AuthRole", b =>
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AuthRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -134,7 +142,58 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuthRoles");
+                    b.ToTable("AuthRoles", (string)null);
+                });
+
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AuthRoleClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AuthRoleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimTag")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuthRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUserAuthClaim", b =>
+                {
+                    b.HasOne("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUserAuthRole", b =>
+                {
+                    b.HasOne("AuthWithCleanArchitecture.Domain.MembershipEntities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AuthWithCleanArchitecture.Domain.MembershipEntities.AuthRole", null)
+                        .WithMany()
+                        .HasForeignKey("AuthRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
-using AuthWithCleanArchitecture.Domain.AppUserAggregate;
+using AuthWithCleanArchitecture.Domain.MembershipEntities;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using AuthWithCleanArchitecture.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 

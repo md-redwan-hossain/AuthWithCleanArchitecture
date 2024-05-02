@@ -1,6 +1,7 @@
 using AuthWithCleanArchitecture.Domain.Common;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 
-namespace AuthWithCleanArchitecture.Domain.AppUserAggregate;
+namespace AuthWithCleanArchitecture.Domain.MembershipEntities;
 
 public class AppUser : Entity<AppUserId>
 {

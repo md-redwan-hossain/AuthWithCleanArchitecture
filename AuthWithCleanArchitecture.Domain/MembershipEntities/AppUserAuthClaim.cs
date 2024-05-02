@@ -1,8 +1,9 @@
 using AuthWithCleanArchitecture.Domain.Common;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 
-namespace AuthWithCleanArchitecture.Domain.AppUserAggregate;
+namespace AuthWithCleanArchitecture.Domain.MembershipEntities;
 
-public class AppUserAuthClaim : Timestamp
+public class AppUserAuthClaim : Entity<AppUserAuthClaimId>
 {
     public required AppUserId AppUserId { get; set; }
     public required string ClaimTag { get; set; }

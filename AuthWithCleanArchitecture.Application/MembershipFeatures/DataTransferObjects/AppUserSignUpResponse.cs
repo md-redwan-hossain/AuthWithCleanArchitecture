@@ -1,4 +1,4 @@
-using AuthWithCleanArchitecture.Domain.AppUserAggregate;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 
 namespace AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects;
 

@@ -3,7 +3,8 @@ using AuthWithCleanArchitecture.Application.AuthCryptographyFeatures;
 using AuthWithCleanArchitecture.Application.Common.Providers;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects.Outcomes;
-using AuthWithCleanArchitecture.Domain.AppUserAggregate;
+using AuthWithCleanArchitecture.Domain.MembershipEntities;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using Mapster;
 using SharpOutcome;
 

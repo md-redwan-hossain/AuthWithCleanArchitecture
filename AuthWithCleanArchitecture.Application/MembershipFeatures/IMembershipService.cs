@@ -1,6 +1,6 @@
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects.Outcomes;
-using AuthWithCleanArchitecture.Domain.AppUserAggregate;
+using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using SharpOutcome;
 
 namespace AuthWithCleanArchitecture.Application.MembershipFeatures;

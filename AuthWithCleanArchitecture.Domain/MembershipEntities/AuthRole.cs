@@ -1,6 +1,7 @@
 using AuthWithCleanArchitecture.Domain.Common;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 
-namespace AuthWithCleanArchitecture.Domain.AuthRoleAggregate;
+namespace AuthWithCleanArchitecture.Domain.MembershipEntities;
 
 public class AuthRole : Entity<AuthRoleId>
 {
