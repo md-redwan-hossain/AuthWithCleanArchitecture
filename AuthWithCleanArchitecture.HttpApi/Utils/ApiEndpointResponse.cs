@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Mapster;
 using Microsoft.AspNetCore.WebUtilities;
 using SharpOutcome;
 
@@ -19,6 +20,14 @@ public static class ApiEndpointResponse
         string contentType = "application/json")
     {
         return MakeResponse(code, data, null, jsonSerializerOptions, contentType);
+    }
+
+    public static async Task<IResult> Send<TEntity, TResponse>(int code, TEntity data,
+        JsonSerializerOptions? jsonSerializerOptions = null,
+        string contentType = "application/json")
+    {
+        return MakeResponse(code, await data.BuildAdapter().AdaptToTypeAsync<TResponse>(),
+            null, jsonSerializerOptions, contentType);
     }
 
     public static IResult Send(int code, string message,

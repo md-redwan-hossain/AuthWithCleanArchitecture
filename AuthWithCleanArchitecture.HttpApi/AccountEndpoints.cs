@@ -1,7 +1,9 @@
 using AuthWithCleanArchitecture.Application.MembershipFeatures;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects.Outcomes;
+using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using AuthWithCleanArchitecture.HttpApi.Utils;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using SharpOutcome;
 
@@ -35,8 +37,9 @@ public class AccountEndpoints : IApiEndpoint
     {
         var result = await memberService.SignUpAsync(dto);
 
-        return result.Match(
-            res => ApiEndpointResponse.Send(StatusCodes.Status201Created, res),
+        return await result.MatchAsync(
+            async res => await ApiEndpointResponse.Send<AppUser, AppUserSignUpResponse>
+            (StatusCodes.Status201Created, res),
             err => ApiEndpointResponse.Send(err switch
             {
                 SignUpBadOutcome.Duplicate => BadOutcomeTag.Duplicate,
