@@ -8,8 +8,6 @@ using AuthWithCleanArchitecture.Infrastructure;
 using AuthWithCleanArchitecture.Infrastructure.Common.Extensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Formatters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,22 +26,6 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 
-builder.Services
-    .AddControllers(opts =>
-    {
-        opts.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
-        opts.OutputFormatters.RemoveType<StringOutputFormatter>();
-    })
-    .AddJsonOptions(opts =>
-    {
-        opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(
-            namingPolicy: JsonNamingPolicy.CamelCase, allowIntegerValues: false)
-        );
-    });
-
-
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -57,7 +39,6 @@ builder.Services.Configure<JsonOptions>(options =>
 builder.Services.AddSwaggerGen(o =>
 {
     o.SupportNonNullableReferenceTypes();
-    // o.UseAllOfToExtendReferenceSchemas();
     o.SchemaFilter<ApiResponseSchemaFilter>();
 });
 
@@ -78,6 +59,5 @@ app.MapApiEndpointsFromAssembly(Assembly.GetExecutingAssembly());
 app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 
 app.Run();
