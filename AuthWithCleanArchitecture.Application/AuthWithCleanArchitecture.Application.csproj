@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.1" />
+      <PackageReference Include="Mapster.Async" Version="2.0.1" />
+      <PackageReference Include="SharpOutcome" Version="0.0.6" />
+      <PackageReference Include="StringMate" Version="0.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AuthWithCleanArchitecture.Domain\AuthWithCleanArchitecture.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
