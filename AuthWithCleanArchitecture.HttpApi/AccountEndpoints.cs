@@ -46,17 +46,22 @@ public class AccountEndpoints : IApiEndpoint
     {
         var result = await memberService.SignUpAsync(dto);
 
-        return await result.MatchAsync(
-            async res => await ApiEndpointResponse.SendAsync<AppUser, AppUserSignUpResponse>
-                (StatusCodes.Status201Created, res),
-            err =>
+        return await result.MatchAsync(OnGoodOutcome, OnBadOutcome);
+
+        async Task<IResult> OnGoodOutcome(AppUser res)
+        {
+            return await ApiEndpointResponse.SendAsync<AppUser, AppUserSignUpResponse>
+            (StatusCodes.Status201Created, res);
+        }
+
+        IResult OnBadOutcome(SignUpBadOutcome err)
+        {
+            return ApiEndpointResponse.Send(err switch
             {
-                return ApiEndpointResponse.Send(err switch
-                {
-                    SignUpBadOutcome.Duplicate => BadOutcomeTag.Duplicate,
-                    _ => BadOutcomeTag.Unknown
-                });
+                SignUpBadOutcome.Duplicate => BadOutcomeTag.Duplicate,
+                _ => BadOutcomeTag.Unknown
             });
+        }
     }
 
     private static async Task<IResult> Login([FromBody] AppUserLoginRequest dto,
@@ -64,17 +69,22 @@ public class AccountEndpoints : IApiEndpoint
     {
         var result = await memberService.LoginAsync(dto);
 
-        return result.Match(
-            jwt => ApiEndpointResponse.Send(StatusCodes.Status200OK, data: jwt),
-            err =>
+        return result.Match(OnGoodOutcome, OnBadOutcome);
+
+        IResult OnGoodOutcome(string jwt)
+        {
+            return ApiEndpointResponse.Send(StatusCodes.Status200OK, data: jwt);
+        }
+
+        IResult OnBadOutcome(LoginBadOutcome err)
+        {
+            return ApiEndpointResponse.Send(err switch
             {
-                return ApiEndpointResponse.Send(err switch
-                {
-                    LoginBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
-                    LoginBadOutcome.PasswordNotMatched => BadOutcomeTag.Unauthorized,
-                    _ => BadOutcomeTag.Unknown
-                });
+                LoginBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
+                LoginBadOutcome.PasswordNotMatched => BadOutcomeTag.Unauthorized,
+                _ => BadOutcomeTag.Unknown
             });
+        }
     }
 
 
@@ -89,19 +99,23 @@ public class AccountEndpoints : IApiEndpoint
         }
 
         var result = await memberService.ProfileAsync(new AppUserId(Guid.Parse(currentUserId)));
+        return await result.MatchAsync(OnGoodOutcome, OnBadOutcome);
 
-        return await result.MatchAsync(
-            async res => await ApiEndpointResponse.SendAsync<AppUser, AppUserProfileResponse>
-                (StatusCodes.Status200OK, res),
-            err =>
+        async Task<IResult> OnGoodOutcome(AppUser res)
+        {
+            return await ApiEndpointResponse.SendAsync<AppUser, AppUserProfileResponse>
+                (StatusCodes.Status200OK, res);
+        }
+
+        IResult OnBadOutcome(ProfileBadOutcome err)
+        {
+            return ApiEndpointResponse.Send(err switch
             {
-                return ApiEndpointResponse.Send(err switch
-                {
-                    ProfileBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
-                    ProfileBadOutcome.Banned => BadOutcomeTag.Forbidden,
-                    ProfileBadOutcome.LockedOut => BadOutcomeTag.Forbidden,
-                    _ => BadOutcomeTag.Unknown
-                });
+                ProfileBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
+                ProfileBadOutcome.Banned => BadOutcomeTag.Forbidden,
+                ProfileBadOutcome.LockedOut => BadOutcomeTag.Forbidden,
+                _ => BadOutcomeTag.Unknown
             });
+        }
     }
 }

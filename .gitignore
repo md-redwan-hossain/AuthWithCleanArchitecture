@@ -43,4 +43,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
-**/db.sqlite3
+**/*.sqlite
+**/*.sqlite3
+**/*-shm
+**/*-wal
