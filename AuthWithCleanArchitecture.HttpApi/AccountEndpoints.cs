@@ -18,6 +18,7 @@ public class AccountEndpoints : IApiEndpoint
 
         accountRoutes.MapPost("/signup", SignUp)
             .AllowAnonymous()
+            .RequireAuthorization()
             .AddEndpointFilter<FluentValidationFilter<AppUserSignUpRequest>>()
             .Produces<ApiResponse<AppUserSignUpResponse>>(statusCode: StatusCodes.Status201Created)
             .Produces<ApiResponse>(statusCode: StatusCodes.Status400BadRequest)

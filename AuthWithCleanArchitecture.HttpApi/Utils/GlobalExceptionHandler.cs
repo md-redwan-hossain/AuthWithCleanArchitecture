@@ -35,6 +35,7 @@ public class GlobalExceptionHandler : IExceptionHandler
                 errMessage = Regex.Replace(httpRequestException.Message, pattern, replacement);
             }
 
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
 
             await httpContext.Response.WriteAsJsonAsync(
                 ApiResponseUtils.ResponseMaker(StatusCodes.Status400BadRequest, message: errMessage),
@@ -42,9 +43,11 @@ public class GlobalExceptionHandler : IExceptionHandler
                 cancellationToken
             );
 
+
             return true;
         }
 
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
         await httpContext.Response.WriteAsJsonAsync(
             ApiResponseUtils.InternalServerErrorResponse(),
