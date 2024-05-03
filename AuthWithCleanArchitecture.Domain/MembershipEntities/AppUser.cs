@@ -21,6 +21,7 @@ public class AppUser : Entity<AppUserId>
         set
         {
             if (value && Email is not null) _isEmailConfirmed = value;
+            else if (value is false && Email is null) _isEmailConfirmed = value;
         }
     }
 
@@ -30,6 +31,7 @@ public class AppUser : Entity<AppUserId>
         set
         {
             if (value && PhoneNumber is not null) _isPhoneNumberConfirmed = value;
+            else if (value is false && PhoneNumber is null) _isPhoneNumberConfirmed = value;
         }
     }
 
@@ -42,6 +44,7 @@ public class AppUser : Entity<AppUserId>
         set
         {
             if (value && CanLockedOut) _isLockedOut = value;
+            else if (value is false) _isLockedOut = value;
         }
     }
 
@@ -51,6 +54,7 @@ public class AppUser : Entity<AppUserId>
         set
         {
             if (value is not null && CanLockedOut) _lockoutEndAtUtc = value;
+            else if (value is null) _lockoutEndAtUtc = value;
         }
     }
 
