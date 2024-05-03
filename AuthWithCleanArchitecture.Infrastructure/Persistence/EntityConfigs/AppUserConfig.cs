@@ -11,10 +11,13 @@ public class AppUserConfig : IEntityTypeConfiguration<AppUser>
     {
         builder.ToTable(nameof(AppUser) + 's');
 
+
         builder.Property(e => e.Id)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
                 convertFromProviderExpression: value => new AppUserId(value)
             );
+
+        builder.Property(e => e.ConcurrencyToken).IsConcurrencyToken();
     }
 }

@@ -59,5 +59,6 @@ public class AppUser : Entity<AppUserId>
     }
 
     public int AccessFailCount { get; set; }
+    public required Guid ConcurrencyToken { get; set; }
     public bool IsVerified => IsEmailConfirmed || IsPhoneNumberConfirmed;
 }

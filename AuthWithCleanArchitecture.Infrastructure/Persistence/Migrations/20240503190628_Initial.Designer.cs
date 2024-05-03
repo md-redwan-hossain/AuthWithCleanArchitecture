@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240502191454_Initial")]
+    [Migration("20240503190628_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -30,6 +30,10 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("CanLockedOut")
                         .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("TEXT");

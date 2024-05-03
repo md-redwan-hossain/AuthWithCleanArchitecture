@@ -28,6 +28,10 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
                     b.Property<bool>("CanLockedOut")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("TEXT");
 

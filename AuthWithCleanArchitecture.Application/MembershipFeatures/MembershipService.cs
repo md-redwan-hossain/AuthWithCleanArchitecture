@@ -45,6 +45,7 @@ public class MembershipService : IMembershipService
             UserName = dto.UserName,
             PasswordHash = await _authCryptographyService.HashPasswordAsync(dto.Password),
             CreatedAtUtc = _dateTimeProvider.CurrentUtcTime,
+            ConcurrencyToken = _guidProvider.SortableGuid()
         };
 
         await _appUnitOfWork.AppUserRepository.CreateAsync(entity);
@@ -76,7 +77,7 @@ public class MembershipService : IMembershipService
         if (entity is null) return ProfileBadOutcome.UserNotFound;
         if (entity.IsBanned) return ProfileBadOutcome.Banned;
         if (entity.IsLockedOut) return ProfileBadOutcome.LockedOut;
-        
+
         return entity;
     }
 }

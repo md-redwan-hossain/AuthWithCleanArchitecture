@@ -24,10 +24,11 @@ namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Migrations
                     IsEmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsPhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsBanned = table.Column<bool>(type: "INTEGER", nullable: false),
-                    IsLockedOut = table.Column<bool>(type: "INTEGER", nullable: false),
                     CanLockedOut = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsLockedOut = table.Column<bool>(type: "INTEGER", nullable: false),
                     LockoutEndAtUtc = table.Column<DateTime>(type: "TEXT", nullable: true),
                     AccessFailCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    ConcurrencyToken = table.Column<Guid>(type: "TEXT", nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
