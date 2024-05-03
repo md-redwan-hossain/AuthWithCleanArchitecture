@@ -22,7 +22,7 @@ public static class ApiEndpointResponse
         return MakeResponse(code, data, null, jsonSerializerOptions, contentType);
     }
 
-    public static async Task<IResult> Send<TEntity, TResponse>(int code, TEntity data,
+    public static async Task<IResult> SendAsync<TEntity, TResponse>(int code, TEntity data,
         JsonSerializerOptions? jsonSerializerOptions = null,
         string contentType = "application/json")
     {

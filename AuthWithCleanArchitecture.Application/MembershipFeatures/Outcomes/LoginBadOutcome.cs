@@ -1,4 +1,4 @@
-namespace AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects.Outcomes;
+namespace AuthWithCleanArchitecture.Application.MembershipFeatures.Outcomes;
 
 public enum LoginBadOutcome : byte
 {

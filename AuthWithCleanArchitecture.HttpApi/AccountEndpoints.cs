@@ -1,9 +1,10 @@
+using System.Security.Claims;
 using AuthWithCleanArchitecture.Application.MembershipFeatures;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects;
-using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects.Outcomes;
+using AuthWithCleanArchitecture.Application.MembershipFeatures.Outcomes;
 using AuthWithCleanArchitecture.Domain.MembershipEntities;
+using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using AuthWithCleanArchitecture.HttpApi.Utils;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using SharpOutcome;
 
@@ -29,6 +30,14 @@ public class AccountEndpoints : IApiEndpoint
             .Produces<ApiResponse<string>>(statusCode: StatusCodes.Status200OK)
             .Produces<ApiResponse>(statusCode: StatusCodes.Status401Unauthorized)
             .Produces<ApiResponse>(statusCode: StatusCodes.Status404NotFound);
+
+
+        accountRoutes.MapGet("/profile", Profile)
+            .RequireAuthorization()
+            .Produces<ApiResponse<string>>(statusCode: StatusCodes.Status200OK)
+            .Produces<ApiResponse>(statusCode: StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponse>(statusCode: StatusCodes.Status403Forbidden)
+            .Produces<ApiResponse>(statusCode: StatusCodes.Status404NotFound);
     }
 
 
@@ -38,14 +47,16 @@ public class AccountEndpoints : IApiEndpoint
         var result = await memberService.SignUpAsync(dto);
 
         return await result.MatchAsync(
-            async res => await ApiEndpointResponse.Send<AppUser, AppUserSignUpResponse>
-            (StatusCodes.Status201Created, res),
-            err => ApiEndpointResponse.Send(err switch
+            async res => await ApiEndpointResponse.SendAsync<AppUser, AppUserSignUpResponse>
+                (StatusCodes.Status201Created, res),
+            err =>
             {
-                SignUpBadOutcome.Duplicate => BadOutcomeTag.Duplicate,
-                _ => BadOutcomeTag.Unknown
-            })
-        );
+                return ApiEndpointResponse.Send(err switch
+                {
+                    SignUpBadOutcome.Duplicate => BadOutcomeTag.Duplicate,
+                    _ => BadOutcomeTag.Unknown
+                });
+            });
     }
 
     private static async Task<IResult> Login([FromBody] AppUserLoginRequest dto,
@@ -54,13 +65,43 @@ public class AccountEndpoints : IApiEndpoint
         var result = await memberService.LoginAsync(dto);
 
         return result.Match(
-            res => ApiEndpointResponse.Send(StatusCodes.Status200OK, data: res),
-            err => ApiEndpointResponse.Send(err switch
+            jwt => ApiEndpointResponse.Send(StatusCodes.Status200OK, data: jwt),
+            err =>
             {
-                LoginBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
-                LoginBadOutcome.PasswordNotMatched => BadOutcomeTag.Unauthorized,
-                _ => BadOutcomeTag.Unknown
-            })
-        );
+                return ApiEndpointResponse.Send(err switch
+                {
+                    LoginBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
+                    LoginBadOutcome.PasswordNotMatched => BadOutcomeTag.Unauthorized,
+                    _ => BadOutcomeTag.Unknown
+                });
+            });
+    }
+
+
+    private static async Task<IResult> Profile(ClaimsPrincipal user,
+        [FromServices] IMembershipService memberService)
+    {
+        var currentUserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(currentUserId))
+        {
+            return ApiEndpointResponse.Send(StatusCodes.Status401Unauthorized);
+        }
+
+        var result = await memberService.ProfileAsync(new AppUserId(Guid.Parse(currentUserId)));
+
+        return await result.MatchAsync(
+            async res => await ApiEndpointResponse.SendAsync<AppUser, AppUserProfileResponse>
+                (StatusCodes.Status200OK, res),
+            err =>
+            {
+                return ApiEndpointResponse.Send(err switch
+                {
+                    ProfileBadOutcome.UserNotFound => BadOutcomeTag.NotFound,
+                    ProfileBadOutcome.Banned => BadOutcomeTag.Forbidden,
+                    ProfileBadOutcome.LockedOut => BadOutcomeTag.Forbidden,
+                    _ => BadOutcomeTag.Unknown
+                });
+            });
     }
 }

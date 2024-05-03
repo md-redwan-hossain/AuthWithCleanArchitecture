@@ -2,7 +2,7 @@ using System.Security.Claims;
 using AuthWithCleanArchitecture.Application.AuthCryptographyFeatures;
 using AuthWithCleanArchitecture.Application.Common.Providers;
 using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects;
-using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjects.Outcomes;
+using AuthWithCleanArchitecture.Application.MembershipFeatures.Outcomes;
 using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using Mapster;
@@ -65,5 +65,18 @@ public class MembershipService : IMembershipService
         if (passwordMatched is false) return LoginBadOutcome.PasswordNotMatched;
 
         return _jwtProvider.GenerateJwt([new Claim(ClaimTypes.NameIdentifier, entity.Id.Data.ToString())]);
+    }
+
+    public async Task<Outcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id)
+    {
+        var entity = await _appUnitOfWork.AppUserRepository.GetOneAsync(
+            filter: x => x.Id == id
+        );
+
+        if (entity is null) return ProfileBadOutcome.UserNotFound;
+        if (entity.IsBanned) return ProfileBadOutcome.Banned;
+        if (entity.IsLockedOut) return ProfileBadOutcome.LockedOut;
+        
+        return entity;
     }
 }
