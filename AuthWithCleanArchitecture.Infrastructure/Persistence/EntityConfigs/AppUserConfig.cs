@@ -15,7 +15,7 @@ public class AppUserConfig : IEntityTypeConfiguration<AppUser>
         builder.Property(e => e.Id)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AppUserId(value)
+                convertFromProviderExpression: value => new AppUserId { Data = value }
             );
 
         builder.Property(e => e.ConcurrencyToken).IsConcurrencyToken();

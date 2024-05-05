@@ -1,3 +1,6 @@
 namespace AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 
-public record AppUserAuthClaimId(Guid Data);
+public readonly record struct AppUserAuthClaimId
+{
+    public required Guid Data { get; init; }
+}

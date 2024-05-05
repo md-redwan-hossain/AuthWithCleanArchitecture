@@ -40,7 +40,7 @@ public class MembershipService : IMembershipService
 
         var entity = new AppUser
         {
-            Id = new AppUserId(_guidProvider.SortableGuid()),
+            Id = new AppUserId { Data = _guidProvider.SortableGuid() },
             FullName = dto.FullName,
             UserName = dto.UserName,
             PasswordHash = await _authCryptographyService.HashPasswordAsync(dto.Password),

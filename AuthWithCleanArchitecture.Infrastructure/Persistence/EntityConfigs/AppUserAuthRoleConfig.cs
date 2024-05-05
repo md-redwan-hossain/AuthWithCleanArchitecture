@@ -16,13 +16,13 @@ public class AppUserAuthRoleConfig : IEntityTypeConfiguration<AppUserAuthRole>
         builder.Property(e => e.AppUserId)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AppUserId(value)
+                convertFromProviderExpression: value => new AppUserId { Data = value }
             );
 
         builder.Property(e => e.AuthRoleId)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AuthRoleId(value)
+                convertFromProviderExpression: value => new AuthRoleId { Data = value }
             );
 
         builder

@@ -14,13 +14,13 @@ public class AuthRoleClaimConfig : IEntityTypeConfiguration<AuthRoleClaim>
         builder.Property(e => e.Id)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AuthRoleClaimId(value)
+                convertFromProviderExpression: value => new AuthRoleClaimId { Data = value }
             );
 
         builder.Property(e => e.AuthRoleId)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AuthRoleId(value)
+                convertFromProviderExpression: value => new AuthRoleId { Data = value }
             );
     }
 }

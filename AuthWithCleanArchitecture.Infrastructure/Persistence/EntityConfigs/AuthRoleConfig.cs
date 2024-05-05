@@ -14,7 +14,7 @@ public class AuthRoleConfig : IEntityTypeConfiguration<AuthRole>
         builder.Property(e => e.Id)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AuthRoleId(value)
+                convertFromProviderExpression: value => new AuthRoleId { Data = value }
             );
     }
 }

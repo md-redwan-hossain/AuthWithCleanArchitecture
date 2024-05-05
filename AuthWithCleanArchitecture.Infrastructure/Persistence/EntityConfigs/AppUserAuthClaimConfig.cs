@@ -10,17 +10,17 @@ public class AppUserAuthClaimConfig : IEntityTypeConfiguration<AppUserAuthClaim>
     public void Configure(EntityTypeBuilder<AppUserAuthClaim> builder)
     {
         builder.ToTable(nameof(AppUserAuthClaim) + 's');
-        
+
         builder.Property(e => e.Id)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AppUserAuthClaimId(value)
+                convertFromProviderExpression: value => new AppUserAuthClaimId { Data = value }
             );
 
         builder.Property(e => e.AppUserId)
             .HasConversion(
                 convertToProviderExpression: value => value.Data,
-                convertFromProviderExpression: value => new AppUserId(value)
+                convertFromProviderExpression: value => new AppUserId { Data = value }
             );
 
         builder.HasOne<AppUser>()

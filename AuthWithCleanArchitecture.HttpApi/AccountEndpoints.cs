@@ -52,7 +52,7 @@ public class AccountEndpoints : IApiEndpoint
         async Task<IResult> OnGoodOutcome(AppUser res)
         {
             return await ApiEndpointResponse.SendAsync<AppUser, AppUserSignUpResponse>
-            (StatusCodes.Status201Created, res);
+                (StatusCodes.Status201Created, res);
         }
 
         IResult OnBadOutcome(SignUpBadOutcome err)
@@ -72,9 +72,9 @@ public class AccountEndpoints : IApiEndpoint
 
         return result.Match(OnGoodOutcome, OnBadOutcome);
 
-        IResult OnGoodOutcome(string jwt)
+        IResult OnGoodOutcome(string jsonWebToken)
         {
-            return ApiEndpointResponse.Send(StatusCodes.Status200OK, data: jwt);
+            return ApiEndpointResponse.Send(StatusCodes.Status200OK, data: jsonWebToken);
         }
 
         IResult OnBadOutcome(LoginBadOutcome err)
@@ -98,8 +98,8 @@ public class AccountEndpoints : IApiEndpoint
         {
             return ApiEndpointResponse.Send(StatusCodes.Status401Unauthorized);
         }
-
-        var result = await memberService.ProfileAsync(new AppUserId(Guid.Parse(currentUserId)));
+        
+        var result = await memberService.ProfileAsync(new AppUserId { Data = Guid.Parse(currentUserId) });
         return await result.MatchAsync(OnGoodOutcome, OnBadOutcome);
 
         async Task<IResult> OnGoodOutcome(AppUser res)
