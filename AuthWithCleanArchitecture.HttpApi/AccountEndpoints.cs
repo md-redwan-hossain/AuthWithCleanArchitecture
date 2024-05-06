@@ -6,7 +6,7 @@ using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using AuthWithCleanArchitecture.HttpApi.Utils;
 using Microsoft.AspNetCore.Mvc;
-using SharpOutcome;
+using SharpOutcome.Helpers;
 
 namespace AuthWithCleanArchitecture.HttpApi;
 

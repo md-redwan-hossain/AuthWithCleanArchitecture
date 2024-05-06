@@ -5,7 +5,6 @@ using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjec
 using AuthWithCleanArchitecture.Application.MembershipFeatures.Outcomes;
 using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
-using Mapster;
 using SharpOutcome;
 
 namespace AuthWithCleanArchitecture.Application.MembershipFeatures;
@@ -29,7 +28,7 @@ public class MembershipService : IMembershipService
         _authCryptographyService = authCryptographyService;
     }
 
-    public async Task<Outcome<AppUser, SignUpBadOutcome>> SignUpAsync(AppUserSignUpRequest dto)
+    public async Task<ValueOutcome<AppUser, SignUpBadOutcome>> SignUpAsync(AppUserSignUpRequest dto)
     {
         var exists = await _appUnitOfWork.AppUserRepository.GetOneAsync(
             filter: x => x.UserName == dto.UserName,
@@ -53,7 +52,7 @@ public class MembershipService : IMembershipService
         return entity;
     }
 
-    public async Task<Outcome<string, LoginBadOutcome>> LoginAsync(AppUserLoginRequest dto)
+    public async Task<ValueOutcome<string, LoginBadOutcome>> LoginAsync(AppUserLoginRequest dto)
     {
         var entity = await _appUnitOfWork.AppUserRepository.GetOneAsync(
             filter: x => x.UserName == dto.UserName,
@@ -68,7 +67,7 @@ public class MembershipService : IMembershipService
         return _jwtProvider.GenerateJwt([new Claim(ClaimTypes.NameIdentifier, entity.Id.Data.ToString())]);
     }
 
-    public async Task<Outcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id)
+    public async Task<ValueOutcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id)
     {
         var entity = await _appUnitOfWork.AppUserRepository.GetOneAsync(
             filter: x => x.Id == id

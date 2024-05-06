@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Mapster;
 using Microsoft.AspNetCore.WebUtilities;
-using SharpOutcome;
+using SharpOutcome.Helpers;
 
 namespace AuthWithCleanArchitecture.HttpApi.Utils;
 

@@ -1,6 +1,5 @@
 using System.Reflection;
 using AuthWithCleanArchitecture.Domain.MembershipEntities;
-using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthWithCleanArchitecture.Infrastructure.Persistence;

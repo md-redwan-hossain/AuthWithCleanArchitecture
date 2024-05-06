@@ -1,7 +1,6 @@
 using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
 using AuthWithCleanArchitecture.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace AuthWithCleanArchitecture.Infrastructure.Persistence.Repositories;
 

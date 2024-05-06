@@ -8,7 +8,7 @@ namespace AuthWithCleanArchitecture.Application.MembershipFeatures;
 
 public interface IMembershipService
 {
-    Task<Outcome<AppUser, SignUpBadOutcome>> SignUpAsync(AppUserSignUpRequest dto);
-    Task<Outcome<string, LoginBadOutcome>> LoginAsync(AppUserLoginRequest dto);
-    Task<Outcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id);
+    Task<ValueOutcome<AppUser, SignUpBadOutcome>> SignUpAsync(AppUserSignUpRequest dto);
+    Task<ValueOutcome<string, LoginBadOutcome>> LoginAsync(AppUserLoginRequest dto);
+    Task<ValueOutcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id);
 }

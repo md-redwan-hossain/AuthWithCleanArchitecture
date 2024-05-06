@@ -1,8 +1,5 @@
-using AuthWithCleanArchitecture.Application.AuthCryptographyFeatures;
 using AuthWithCleanArchitecture.Application.Common.Extensions;
-using AuthWithCleanArchitecture.Application.Common.Providers;
 using AuthWithCleanArchitecture.Application.MembershipFeatures;
-using AuthWithCleanArchitecture.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
