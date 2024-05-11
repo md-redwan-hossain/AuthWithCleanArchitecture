@@ -10,5 +10,8 @@ public interface IMembershipService
 {
     Task<ValueOutcome<AppUser, SignUpBadOutcome>> SignUpAsync(AppUserSignUpRequest dto);
     Task<ValueOutcome<string, LoginBadOutcome>> LoginAsync(AppUserLoginRequest dto);
-    Task<ValueOutcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id);
+    Task<ValueOutcome<AppUser, ProfileBadOutcome>> ReadProfileAsync(AppUserId id);
+
+    Task<ValueOutcome<AppUser, ProfileBadOutcome>> UpdateProfileAsync(AppUserId id,
+        AppUserProfileUpdateRequest dto);
 }

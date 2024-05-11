@@ -51,6 +51,18 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddAuthPolicies(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy("DataUpdatePolicy", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("IsVerified", bool.TrueString);
+            });
+
+        return services;
+    }
+
 
     public static IServiceCollection AddJwtAuth(this IServiceCollection services, IConfiguration configuration)
     {

@@ -5,6 +5,7 @@ using AuthWithCleanArchitecture.Application.MembershipFeatures.DataTransferObjec
 using AuthWithCleanArchitecture.Application.MembershipFeatures.Outcomes;
 using AuthWithCleanArchitecture.Domain.MembershipEntities;
 using AuthWithCleanArchitecture.Domain.MembershipEntities.ValueObjects;
+using Mapster;
 using SharpOutcome;
 
 namespace AuthWithCleanArchitecture.Application.MembershipFeatures;
@@ -56,7 +57,7 @@ public class MembershipService : IMembershipService
     {
         var entity = await _appUnitOfWork.AppUserRepository.GetOneAsync(
             filter: x => x.UserName == dto.UserName,
-            subsetSelector: x => new { x.Id, x.PasswordHash }
+            subsetSelector: x => new { x.Id, x.PasswordHash, x.IsVerified }
         );
 
         if (string.IsNullOrEmpty(entity?.PasswordHash)) return LoginBadOutcome.UserNotFound;
@@ -64,10 +65,16 @@ public class MembershipService : IMembershipService
         var passwordMatched = await _authCryptographyService.VerifyPasswordAsync(dto.Password, entity.PasswordHash);
         if (passwordMatched is false) return LoginBadOutcome.PasswordNotMatched;
 
-        return _jwtProvider.GenerateJwt([new Claim(ClaimTypes.NameIdentifier, entity.Id.Data.ToString())]);
+        List<Claim> claims =
+        [
+            new Claim(ClaimTypes.NameIdentifier, entity.Id.Data.ToString()),
+            new Claim("IsVerified", entity.IsVerified.ToString())
+        ];
+
+        return _jwtProvider.GenerateJwt(claims);
     }
 
-    public async Task<ValueOutcome<AppUser, ProfileBadOutcome>> ProfileAsync(AppUserId id)
+    public async Task<ValueOutcome<AppUser, ProfileBadOutcome>> ReadProfileAsync(AppUserId id)
     {
         var entity = await _appUnitOfWork.AppUserRepository.GetOneAsync(
             filter: x => x.Id == id
@@ -76,6 +83,25 @@ public class MembershipService : IMembershipService
         if (entity is null) return ProfileBadOutcome.UserNotFound;
         if (entity.IsBanned) return ProfileBadOutcome.Banned;
         if (entity.IsLockedOut) return ProfileBadOutcome.LockedOut;
+
+        return entity;
+    }
+
+
+    public async Task<ValueOutcome<AppUser, ProfileBadOutcome>> UpdateProfileAsync(AppUserId id,
+        AppUserProfileUpdateRequest dto)
+    {
+        var result = await ReadProfileAsync(id);
+
+        if (result.TryPickGoodOutcome(out var entity, out var err) is false)
+        {
+            return err;
+        }
+
+        await dto.BuildAdapter().AdaptToAsync(entity);
+
+        await _appUnitOfWork.AppUserRepository.UpdateAsync(entity);
+        await _appUnitOfWork.SaveAsync();
 
         return entity;
     }
