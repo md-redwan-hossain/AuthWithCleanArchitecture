@@ -18,15 +18,22 @@ namespace AuthWithCleanArchitecture.HttpApi.Controllers;
 [Authorize]
 public class AccountController : ControllerBase
 {
+    private readonly IMembershipService _memberService;
+
+    public AccountController(IMembershipService memberService)
+    {
+        _memberService = memberService;
+    }
+
     [HttpPost("signup")]
     [AllowAnonymous]
     [ValidationActionFilter<AppUserSignUpRequest>]
     [ProducesResponseType<ApiResponse<AppUserSignUpResponse>>(StatusCodes.Status201Created)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> SignUp([FromBody] AppUserSignUpRequest dto, IMembershipService memberService)
+    public async Task<IActionResult> SignUp([FromBody] AppUserSignUpRequest dto)
     {
-        var result = await memberService.SignUpAsync(dto);
+        var result = await _memberService.SignUpAsync(dto);
 
         return await result.MatchAsync(OnGoodOutcome, OnBadOutcome);
 
@@ -50,9 +57,9 @@ public class AccountController : ControllerBase
     [HttpPost("login")]
     [AllowAnonymous]
     [ValidationActionFilter<AppUserLoginRequest>]
-    public async Task<IActionResult> Login([FromBody] AppUserLoginRequest dto, IMembershipService memberService)
+    public async Task<IActionResult> Login([FromBody] AppUserLoginRequest dto)
     {
-        var result = await memberService.LoginAsync(dto);
+        var result = await _memberService.LoginAsync(dto);
 
         return result.Match(OnGoodOutcome, OnBadOutcome);
 
@@ -73,7 +80,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("profile")]
-    public async Task<IActionResult> ReadProfile(IMembershipService memberService)
+    public async Task<IActionResult> ReadProfile()
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -82,7 +89,7 @@ public class AccountController : ControllerBase
             return ControllerContext.MakeResponse(StatusCodes.Status401Unauthorized);
         }
 
-        var result = await memberService.ReadProfileAsync(new AppUserId { Data = Guid.Parse(currentUserId) });
+        var result = await _memberService.ReadProfileAsync(new AppUserId { Data = Guid.Parse(currentUserId) });
         return await result.MatchAsync(OnGoodOutcome, OnBadOutcome);
 
         async Task<IActionResult> OnGoodOutcome(AppUser res)
@@ -107,8 +114,7 @@ public class AccountController : ControllerBase
     [HttpPut("profile")]
     [Authorize(Policy = "DataUpdatePolicy")]
     [ValidationActionFilter<AppUserProfileUpdateRequest>]
-    public async Task<IActionResult> UpdateProfile([FromBody] AppUserProfileUpdateRequest dto,
-        IMembershipService memberService)
+    public async Task<IActionResult> UpdateProfile([FromBody] AppUserProfileUpdateRequest dto)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -117,7 +123,7 @@ public class AccountController : ControllerBase
             return ControllerContext.MakeResponse(StatusCodes.Status401Unauthorized);
         }
 
-        var result = await memberService.UpdateProfileAsync(new AppUserId { Data = Guid.Parse(currentUserId) }, dto);
+        var result = await _memberService.UpdateProfileAsync(new AppUserId { Data = Guid.Parse(currentUserId) }, dto);
         return await result.MatchAsync(OnGoodOutcome, OnBadOutcome);
 
         async Task<IActionResult> OnGoodOutcome(AppUser res)
